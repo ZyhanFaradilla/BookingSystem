@@ -1,0 +1,50 @@
+﻿@using Booking.DataModel;
+@using Booking.DataModel.Master.Room;
+@model IndexRoomDTO
+
+@{
+    ViewData["Title"] = "Master Room";
+}
+
+@section breadCrumbs {
+    <span>Master Room</span>
+}
+
+<div class="grid-container">
+    <form class="filter" method="get" asp-controller="Room" asp-action="Index"></form>
+    <a class="blue-button create-button" asp-action="Created">Add New</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Room Name</th>
+                <th>Floor</th>
+                <th>Description</th>
+                <th>Location Office</th>
+                <th>Capacity</th>
+                <th>Room Color</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.RowRooms)
+            {
+                <tr>
+                    <td>
+                        <a class="blue-button update-button" asp-action="Created" asp-route-id="@row.Id"><i class="fas fa-edit"></i></a>
+                        <a class="blue-button delete-button" asp-action="Delete" asp-route-id="@row.Id"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                    <td>@row.RoomName</td>
+                    <td>@row.Floor</td>
+                    <td>@row.Description</td>
+                    <td>@row.Location</td>
+                    <td>@row.Capacity</td>
+                    <td><i class="fas fa-bookmark" style="color:@row.RoomColor"></i> @row.RoomColor</td>
+                </tr>
+            }
+        </tbody>
+        <pagination colspan="7"
+                    total-pages="@Model.TotalPages"
+                    page="@ViewBag.Page">
+        </pagination>
+    </table>
+</div>

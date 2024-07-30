@@ -1,0 +1,53 @@
+﻿@using Booking.DataModel;
+@using Booking.DataModel.Master.Resource;
+@model IndexResourceDTO
+
+@{
+    ViewData["Title"] = "Master Resource";
+}
+
+@section breadCrumbs {
+    <span>Master Resource</span>
+}
+
+<div class="grid-container">
+    <form class="filter" method="get" asp-controller="Resource" asp-action="Index"></form>
+    <a class="blue-button create-button" asp-action="Created">Add New</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Resource Name</th>
+                <th>Status</th>
+                <th>Icon</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.RowResources)
+            {
+                <tr>
+                    <td>
+                        <a class="blue-button update-button" asp-action="Created" asp-route-id="@row.Id"><i class="fas fa-edit"></i></a>
+                        <a class="blue-button delete-button" asp-action="Delete" asp-route-id="@row.Id"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                    <td>@row.ResourceName</td>
+                    @if (row.Status)
+                    {
+                        <td><i class="fas fa-check-square" style="color:green"></i></td>
+                    }
+                    else
+                    {
+                        <td><input type="checkbox" value="@row.Status" disabled /></td>
+                    }
+                    <td>
+                        <img src="~/images/@row.Icon" width="50px" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <pagination colspan="4"
+                    total-pages="@Model.TotalPages"
+                    page="@ViewBag.Page">
+        </pagination>
+    </table>
+</div>

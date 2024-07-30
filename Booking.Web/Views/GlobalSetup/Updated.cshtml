@@ -1,0 +1,42 @@
+﻿@using Booking.DataModel.Master.GlobalSetup
+@model CreatedGlobalSetupDTO
+
+@{
+    ViewData["Title"] = "New Global Setup";
+}
+
+<form method="post" action="Updated" class="upsert-form">
+    <table>
+        <tbody>
+            <tr>
+                <td>Parameter Code</td>
+                <td>
+                    <input asp-for="ParamterCode" readonly />
+                </td>
+            </tr>
+            <tr>
+                <td>Parameter Name</td>
+                <td>
+                    <input asp-for="ParamterName" />
+                    <span asp-validation-for="ParamterName"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Parameter Description</td>
+                <td>
+                    <input asp-for="ParamterDesc" />
+                    <span asp-validation-for="ParamterDesc"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Parameter Value</td>
+                <td>
+                    <input asp-for="ParamterValue" />
+                    <span asp-validation-for="ParamterValue"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="blue-button" type="submit">Submit</button>
+    <a class="blue-button update-button" asp-action="Index" asp-controller="GlobalSetup">Back</a>
+</form>

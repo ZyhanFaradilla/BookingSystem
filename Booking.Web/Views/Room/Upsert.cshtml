@@ -1,0 +1,93 @@
+﻿@using Booking.DataModel.Master.Room
+@model CreatedRoomDTO
+
+@{
+    ViewData["Title"] = "New Room";
+}
+
+<form method="post" action="Created" class="upsert-form">
+    @if (Model.Id != 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+    <table>
+        <tbody>
+            <tr>
+                <td>Room Name</td>
+                <td>
+                    <input asp-for="Name" />
+                    <span asp-validation-for="Name"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Floor</td>
+                <td>
+                    <input type="number" asp-for="Floor" />
+                    <span asp-validation-for="Floor"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="textarea-label">Description</td>
+                <td>
+                    <textarea asp-for="Description"></textarea>
+                    <span asp-validation-for="Description"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Location</label>
+                </td>
+                <td>
+                    <select asp-for="LocationId"
+                            asp-items="@(new SelectList(Model.LocationDropdown, "Value", "Text"))"></select>
+                    <span asp-validation-for="LocationId"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Maximum Capacity Room</td>
+                <td>
+                    <input asp-for="Capacity" />
+                    <span asp-validation-for="Capacity"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Resource</td>
+                <td>
+                    <table class="table-resource-code">
+                        <thead>
+                            <tr>
+                                <th>Is Active</th>
+                                <th>Resource Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Model.ResourcesCheckbox.Count; i++)
+                            {
+                                <tr>
+                                    <td>
+                                        <label>
+                                            <input type="checkbox" asp-for="ResourcesCheckbox[i].IsSelected" />
+                                            <input type="hidden" asp-for="ResourcesCheckbox[i].Id">
+                                        </label>
+                                    </td>
+                                    <td>
+                                        @Model.ResourcesCheckbox[i].Name
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>Color</td>
+                <td>
+                    <input asp-for="ColorRoom" type="color" />
+                    <span asp-validation-for="ColorRoom"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="blue-button" type="submit">Submit</button>
+    <a class="blue-button update-button" asp-action="Index" asp-controller="Room">Back</a>
+</form>

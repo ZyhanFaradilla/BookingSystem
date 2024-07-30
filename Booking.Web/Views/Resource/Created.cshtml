@@ -1,0 +1,75 @@
+﻿@using Booking.DataModel.Master.Resource
+@model CreatedResourceDTO
+
+@{
+    ViewData["Title"] = "New Resource";
+}
+
+<form method="post" action="Created" class="upsert-form" enctype="multipart/form-data">
+    @if (Model.Id != 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+    <table>
+        <tbody>
+            <tr>
+                <td>Resource Name</td>
+                <td>
+                    <input asp-for="Name" />
+                    <span asp-validation-for="Name"></span>
+                </td>
+            </tr>
+            @if(Model.Id != 0)
+            {
+                <tr>
+                    <td>Resource Code</td>
+                    <td>
+                        <a class="blue-button create-button" asp-action="Created" asp-controller="ResourceCode" asp-route-id="@Model.Id">Add New Code</a>
+                        <table class="table-resource-code">
+                            <thead>
+                                <tr>
+                                    <th>Is Active</th>
+                                    <th>Resource Code</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var row in Model.Codes)
+                                {
+                                    <tr>
+                                        @if (row.Status)
+                                        {
+                                            <td><i class="fas fa-check-square" style="color:green"></i></td>
+                                        }
+                                        else
+                                        {
+                                            <td><input type="checkbox" value="@row.Status" disabled /></td>
+                                        }
+                                        <td>@row.ResourceCode</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td class="textarea-label">Status</td>
+                <td>
+                    <label>
+                        <input type="checkbox" name="Status" asp-for="Status" value="true">
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td><label>Resource Icon</label></td>
+                <td>
+                    <input type="file" asp-for="ResourceIcon" name="imgIcon">
+                    <input asp-for="ResourceIcon" readonly/>
+                    <span asp-validation-for="ResourceIcon"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="blue-button" type="submit">Submit</button>
+    <a class="blue-button update-button" asp-action="Index" asp-controller="Resource">Back</a>
+</form>

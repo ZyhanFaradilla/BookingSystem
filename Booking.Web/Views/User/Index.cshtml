@@ -1,0 +1,50 @@
+﻿@using Booking.DataModel;
+@using Booking.DataModel.Master.User;
+@model IndexUserDTO
+
+@{
+    ViewData["Title"] = "Master User";
+}
+
+@section breadCrumbs {
+    <span>Master User</span>
+}
+
+<div class="grid-container">
+    <form class="filter" method="get" asp-controller="User" asp-action="Index"></form>
+    <a class="blue-button create-button" asp-action="Created">Add New</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Login Name</th>
+                <th>Role Name</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+                <th>Upadated By</th>
+                <th>Updated Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.RowUsers)
+            {
+                <tr>
+                    <td>
+                        <a class="blue-button update-button" asp-action="Created" asp-route-id="@row.Id"><i class="fas fa-edit"></i></a>
+                        <a class="blue-button delete-button" asp-action="Delete" asp-route-id="@row.Id"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                    <td>@row.LoginName</td>
+                    <td>@row.RoleName</td>
+                    <td>@row.CreatedBy</td>
+                    <td>@row.CreatedDate</td>
+                    <td>@row.UpdatedBy</td>
+                    <td>@row.UpdatedDate</td>
+                </tr>
+            }
+        </tbody>
+        <pagination colspan="7"
+                    total-pages="@Model.TotalPages"
+                    page="@ViewBag.Page">
+        </pagination>
+    </table>
+</div>

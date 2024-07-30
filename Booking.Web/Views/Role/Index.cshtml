@@ -1,0 +1,48 @@
+﻿@using Booking.DataModel;
+@using Booking.DataModel.Master.Role;
+@model IndexRoleDTO
+
+@{
+    ViewData["Title"] = "Master Role";
+}
+
+@section breadCrumbs {
+    <span>Master Role</span>
+}
+
+<div class="grid-container">
+    <form class="filter" method="get" asp-controller="Role" asp-action="Index"></form>
+    <a class="blue-button create-button" asp-action="Created">Add New</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Name</th>
+                <th>Created By</th>
+                <th>Created Date</th>
+                <th>Updated By</th>
+                <th>Upadated Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.Roles)
+            {
+                <tr>
+                    <td>
+                        <a class="blue-button update-button" asp-action="Created" asp-route-id="@row.Id"><i class="fas fa-edit"></i></a>
+                        <a class="blue-button delete-button" asp-action="Delete" asp-route-id="@row.Id"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                    <td>@row.Name</td>
+                    <td>@row.CreatedBy</td>
+                    <td>@row.CreatedDate</td>
+                    <td>@row.UpdatedBy</td>
+                    <td>@row.UpdatedDate</td>
+                </tr>
+            }
+        </tbody>
+        <pagination colspan="2"
+                    total-pages="@Model.TotalPages"
+                    page="@ViewBag.Page">
+        </pagination>
+    </table>
+</div>

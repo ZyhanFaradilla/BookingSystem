@@ -1,0 +1,50 @@
+﻿@using Booking.DataModel.Master.User
+@model CreatedUserDTO
+
+@{
+    ViewData["Title"] = "New User";
+}
+
+<form method="post" action="Created" class="upsert-form">
+    @if (Model.Id != 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+    <table>
+        <tbody>
+            <tr>
+                <td>Login Name</td>
+                <td>
+                    <input asp-for="LoginName" />
+                    <span asp-validation-for="LoginName"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td>
+                    <input type="password" asp-for="Password" />
+                    <span asp-validation-for="Password"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>Re-Password</td>
+                <td>
+                    <input type="password" asp-for="RePassword" />
+                    <span asp-validation-for="RePassword"></span>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>Role</label>
+                </td>
+                <td>
+                    <select asp-for="RoleId"
+                            asp-items="@(new SelectList(Model.RoleDropdown, "Value", "Text"))"></select>
+                    <span asp-validation-for="RoleId"></span>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="blue-button" type="submit">Submit</button>
+    <a class="blue-button update-button" asp-action="Index" asp-controller="User">Back</a>
+</form>

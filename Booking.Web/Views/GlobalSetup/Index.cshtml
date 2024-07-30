@@ -1,0 +1,45 @@
+﻿@using Booking.DataModel;
+@using Booking.DataModel.Master.GlobalSetup;
+@model IndexGlobalSetupDTO
+
+@{
+    ViewData["Title"] = "Master Global Setup";
+}
+
+@section breadCrumbs {
+    <span>Global Setup</span>
+}
+
+<div class="grid-container">
+    <form class="filter" method="get" asp-controller="GlobalSetup" asp-action="Index"></form>
+    <a class="blue-button create-button" asp-action="Inserted">Add New</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Parameter Code</th>
+                <th>Parameter Name</th>
+                <th>Parameter Description</th>
+                <th>Parameter Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.RowGlobalSetup)
+            {
+                <tr>
+                    <td>
+                        <a class="blue-button update-button" asp-action="Updated" asp-route-parameterCode="@row.ParamterCode"><i class="fas fa-edit"></i></a>
+                    </td>
+                    <td>@row.ParamterCode</td>
+                    <td>@row.ParamterName</td>
+                    <td>@row.ParamterDesc</td>
+                    <td>@row.ParamterValue</td>
+                </tr>
+            }
+        </tbody>
+        <pagination colspan="5"
+                    total-pages="@Model.TotalPages"
+                    page="@ViewBag.Page">
+        </pagination>
+    </table>
+</div>

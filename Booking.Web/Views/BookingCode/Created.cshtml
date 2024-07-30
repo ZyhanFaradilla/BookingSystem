@@ -1,0 +1,34 @@
+﻿@using Booking.DataModel.Master.BookingCode
+@model CreatedBookingCodeDTO
+
+@{
+    ViewData["Title"] = "New Booking Code";
+}
+
+<form method="post" action="Created" class="upsert-form">
+    @if (Model.Id != 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+    <table>
+        <tbody>
+            <tr>
+                <td>Booking Code</td>
+                <td>
+                    <input asp-for="BookingCode" />
+                    <span asp-validation-for="BookingCode"></span>
+                </td>
+            </tr>
+            <tr>
+                <td class="textarea-label">Status</td>
+                <td>
+                    <label>
+                        <input type="checkbox" name="Status" asp-for="Status" value="true">
+                    </label>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <button class="blue-button" type="submit">Submit</button>
+    <a class="blue-button update-button" asp-action="Index" asp-controller="BookingCode">Back</a>
+</form>

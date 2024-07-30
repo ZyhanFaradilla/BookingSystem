@@ -1,0 +1,36 @@
+﻿@using Booking.DataModel;
+@using Booking.DataModel.Master.BookingCode;
+@model IndexBookingCodeDTO
+
+@{
+    ViewData["Title"] = "Master Booking Code";
+}
+
+<div class="grid-container">
+    <form class="filter" method="get" asp-controller="BookingCode" asp-action="Index"></form>
+    <a class="blue-button create-button" asp-action="Created">Add New</a>
+    <table>
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th>Booking Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.RowBookingCode)
+            {
+                <tr>
+                    <td>
+                        <a class="blue-button update-button" asp-action="Created" asp-route-id="@row.Id"><i class="fas fa-edit"></i></a>
+                        <a class="blue-button delete-button" asp-action="Delete" asp-route-id="@row.Id"><i class="fas fa-trash-alt"></i></a>
+                    </td>
+                    <td>@row.BookingCode</td>
+                </tr>
+            }
+        </tbody>
+        <pagination colspan="2"
+                    total-pages="@Model.TotalPages"
+                    page="@ViewBag.Page">
+        </pagination>
+    </table>
+</div>
