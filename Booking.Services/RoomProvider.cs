@@ -91,6 +91,7 @@ namespace Booking.Services
             {
                 if (resource.IsSelected)
                 {
+                    context.MstResourceCodes.SingleOrDefault(res => res.Id == resource.Id).IsActive = false;
                     model.Resources.Add(resource.Id);
                 }
                 else
@@ -119,7 +120,7 @@ namespace Booking.Services
 
         public List<TransResourceRoom> GetResourceCodeRoom(int id)
         {
-            return context.TransResourceRooms.Where(resource => resource.RoomId == id && !resource.IsExpired.Value).ToList();
+            return context.TransResourceRooms.Where(resource => resource.RoomId == id && resource.IsExpired == false).ToList();
         }
 
         public List<int> GetResourceCode(int id)
@@ -147,33 +148,46 @@ namespace Booking.Services
             context.SaveChanges();
             foreach (var resource in model.ResourcesCheckbox)
             {
+                var resRoomNull = context.TransResourceRooms.Where(resRoom => resRoom.IsExpired == null).SingleOrDefault(resRoom => resRoom.ResourceCodeId == resource.Id);
                 if (resource.IsSelected)
                 {
-                    var resRoom = context.TransResourceRooms.SingleOrDefault(resRoom => resRoom.ResourceCodeId == resource.Id);
-                    if (resRoom == null)
+                    if (resRoomNull != null)
                     {
-                        model.Resources.Add(resource.Id);
-                        var roomResource = new TransResourceRoom
-                        {
-                            RoomId = getData.Id,
-                            ResourceCodeId = resource.Id,
-                            IsExpired = false
-                        };
-                        context.TransResourceRooms.Add(roomResource);
+                        resRoomNull.IsExpired = false;
                         context.MstResourceCodes.SingleOrDefault(res => res.Id == resource.Id).IsActive = false;
                     } else
                     {
-                        model.Resources.Add(resource.Id);
-                        resRoom.IsExpired = false;
-                        context.MstResourceCodes.SingleOrDefault(res => res.Id == resource.Id).IsActive = false;
+                        var resRoom = context.TransResourceRooms.Where(resRoom => resRoom.IsExpired == false).SingleOrDefault(resRoom => resRoom.ResourceCodeId == resource.Id);
+                        if (resRoom == null)
+                        {
+                            model.Resources.Add(resource.Id);
+                            var roomResource = new TransResourceRoom
+                            {
+                                RoomId = getData.Id,
+                                ResourceCodeId = resource.Id,
+                                IsExpired = false
+                            };
+                            context.TransResourceRooms.Add(roomResource);
+                            context.MstResourceCodes.SingleOrDefault(res => res.Id == resource.Id).IsActive = false;
+                        }
+                        else
+                        {
+                            context.MstResourceCodes.SingleOrDefault(res => res.Id == resource.Id).IsActive = false;
+                        }
                     }
                 }
                 else
                 {
-                    var resRoom = context.TransResourceRooms.SingleOrDefault(resRoom => resRoom.ResourceCodeId == resource.Id);
-                    if (resRoom != null)
+                    if (resRoomNull != null)
                     {
-                        resRoom.IsExpired = true;
+                        resRoomNull.IsExpired = true;
+                    } else
+                    {
+                        var resRoom = context.TransResourceRooms.Where(resRoom => resRoom.IsExpired == false).SingleOrDefault(resRoom => resRoom.ResourceCodeId == resource.Id);
+                        if (resRoom != null)
+                        {
+                            resRoom.IsExpired = null;
+                        }
                     }
                     context.MstResourceCodes.SingleOrDefault(res => res.Id == resource.Id).IsActive = true;
                 }
@@ -184,7 +198,7 @@ namespace Booking.Services
         public void DeleteRoom(int id)
         {
             var getData = GetRoom(id);
-            var getResource = context.TransResourceRooms.Where(resRoom => resRoom.RoomId == id).ToList();
+            var getResource = context.TransResourceRooms.Where(resRoom => (resRoom.RoomId == id && resRoom.IsExpired == false) || (resRoom.RoomId == id && resRoom.IsExpired == null)).ToList();
             if (getResource != null)
             {
                 foreach (var roomResource in getResource)

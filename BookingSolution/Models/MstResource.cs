@@ -26,6 +26,4 @@ public partial class MstResource
     public int? DeletedBy { get; set; }
 
     public virtual ICollection<MstResourceCode> MstResourceCodes { get; set; } = new List<MstResourceCode>();
-
-    public virtual ICollection<ResourceRoom> ResourceRooms { get; set; } = new List<ResourceRoom>();
 }

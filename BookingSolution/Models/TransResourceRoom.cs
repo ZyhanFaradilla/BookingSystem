@@ -16,4 +16,6 @@ public partial class TransResourceRoom
     public virtual MstResourceCode? ResourceCode { get; set; }
 
     public virtual MstRoom? Room { get; set; }
+
+    public virtual ICollection<TransResourceHistory> TransResourceHistories { get; set; } = new List<TransResourceHistory>();
 }

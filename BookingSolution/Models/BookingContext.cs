@@ -35,7 +35,13 @@ public partial class BookingContext : DbContext
 
     public virtual DbSet<MstUser> MstUsers { get; set; }
 
-    public virtual DbSet<ResourceRoom> ResourceRooms { get; set; }
+    public virtual DbSet<TransCatering> TransCaterings { get; set; }
+
+    public virtual DbSet<TransHistory> TransHistories { get; set; }
+
+    public virtual DbSet<TransParticipantHist> TransParticipantHists { get; set; }
+
+    public virtual DbSet<TransResourceHistory> TransResourceHistories { get; set; }
 
     public virtual DbSet<TransResourceRoom> TransResourceRooms { get; set; }
 
@@ -206,23 +212,75 @@ public partial class BookingContext : DbContext
                 .HasConstraintName("UserRole");
         });
 
-        modelBuilder.Entity<ResourceRoom>(entity =>
+        modelBuilder.Entity<TransCatering>(entity =>
         {
-            entity.HasKey(e => new { e.RoomId, e.ResourceId }).HasName("ResourceRoom_pkey");
+            entity.HasKey(e => e.Id).HasName("TransCatering_pkey");
 
-            entity.ToTable("ResourceRoom");
+            entity.ToTable("TransCatering");
 
-            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.CreatedDate).HasPrecision(6);
+            entity.Property(e => e.Item).HasMaxLength(200);
+            entity.Property(e => e.Notes).HasMaxLength(200);
+            entity.Property(e => e.Status).HasMaxLength(100);
+            entity.Property(e => e.UpdatedDate).HasPrecision(6);
+        });
 
-            entity.HasOne(d => d.Resource).WithMany(p => p.ResourceRooms)
-                .HasForeignKey(d => d.ResourceId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("ResourceId_Resource");
+        modelBuilder.Entity<TransHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("TransHistory_pkey");
 
-            entity.HasOne(d => d.Room).WithMany(p => p.ResourceRooms)
+            entity.ToTable("TransHistory");
+
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.CancelledBy).HasMaxLength(100);
+            entity.Property(e => e.CancelledDate).HasPrecision(6);
+            entity.Property(e => e.CreatedDate).HasPrecision(6);
+            entity.Property(e => e.Email).HasMaxLength(100);
+            entity.Property(e => e.IsVip).HasColumnName("IsVIP");
+            entity.Property(e => e.Necessity).HasMaxLength(200);
+            entity.Property(e => e.RequestBy).HasMaxLength(100);
+            entity.Property(e => e.Status).HasMaxLength(100);
+            entity.Property(e => e.TimeFrom).HasColumnType("time(6) with time zone");
+            entity.Property(e => e.TimeTo).HasColumnType("time(6) with time zone");
+            entity.Property(e => e.UpdatedDate).HasPrecision(6);
+
+            entity.HasOne(d => d.Room).WithMany(p => p.TransHistories)
                 .HasForeignKey(d => d.RoomId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("RoomId_Room");
+                .HasConstraintName("Fk_Room_History");
+        });
+
+        modelBuilder.Entity<TransParticipantHist>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("TransParticipantHist_pkey");
+
+            entity.ToTable("TransParticipantHist");
+
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.Email).HasMaxLength(200);
+
+            entity.HasOne(d => d.History).WithMany(p => p.TransParticipantHists)
+                .HasForeignKey(d => d.HistoryId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("Fk_TransHistory");
+        });
+
+        modelBuilder.Entity<TransResourceHistory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("TransResourceHistory_pkey");
+
+            entity.ToTable("TransResourceHistory");
+
+            entity.Property(e => e.Id).UseIdentityAlwaysColumn();
+            entity.Property(e => e.RequestBy).HasMaxLength(200);
+            entity.Property(e => e.Status).HasMaxLength(100);
+            entity.Property(e => e.TimeFrom).HasColumnType("time(6) with time zone");
+            entity.Property(e => e.TimeTo).HasColumnType("time(6) with time zone");
+
+            entity.HasOne(d => d.ResourceRoom).WithMany(p => p.TransResourceHistories)
+                .HasForeignKey(d => d.ResourceRoomId)
+                .HasConstraintName("Fk_TransHistResRoom");
         });
 
         modelBuilder.Entity<TransResourceRoom>(entity =>

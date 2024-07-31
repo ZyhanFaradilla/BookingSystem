@@ -33,7 +33,7 @@ public partial class MstRoom
 
     public virtual MstLocation? Location { get; set; }
 
-    public virtual ICollection<ResourceRoom> ResourceRooms { get; set; } = new List<ResourceRoom>();
+    public virtual ICollection<TransHistory> TransHistories { get; set; } = new List<TransHistory>();
 
     public virtual ICollection<TransResourceRoom> TransResourceRooms { get; set; } = new List<TransResourceRoom>();
 }

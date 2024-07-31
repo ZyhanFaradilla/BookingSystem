@@ -145,19 +145,25 @@ namespace Booking.Services
             List<CheckboxDTO> dto = new List<CheckboxDTO>();
             using (var dbContext = new BookingContext())
             {
+                // Filter out expired resources
+                var transResRoom = dbContext.TransResourceRooms
+                                           .Where(resRoom => resRoom.IsExpired == false || resRoom.IsExpired == null);
+
                 var query = from resource in dbContext.MstResources
-                            where !resource.DeletedDate.HasValue
                             join resourceCode in dbContext.MstResourceCodes on resource.Id equals resourceCode.ResourceId
-                            join resourceRoom in dbContext.TransResourceRooms on resourceCode.Id equals resourceRoom.ResourceCodeId into rr
-                            from resourceRoom in rr.DefaultIfEmpty()
-                            where resourceRoom.RoomId == id || resourceRoom == null
+                            join transResourceRoom in transResRoom on resourceCode.Id equals transResourceRoom.ResourceCodeId into resourceRoomGroup
+                            from transResourceRoom in resourceRoomGroup.DefaultIfEmpty()
+                            where resource.DeletedDate == null
+                                  && resource.Status == true
+                                  && (transResourceRoom == null || transResourceRoom.RoomId == id || transResourceRoom.IsExpired == null)
                             orderby resource.Name ascending
                             select new CheckboxDTO
                             {
                                 Id = resourceCode.Id,
                                 Name = resource.Name,
-                                IsInsert = resourceRoom != null
+                                IsInsert = true
                             };
+
                 dto = query.ToList();
             }
             return dto;
@@ -182,6 +188,14 @@ namespace Booking.Services
                 dto = query.ToList();
             }
             return dto;
+        }
+
+        public static string GetRoomName(int id)
+        {
+            using (var dbContext = new BookingContext())
+            {
+                return dbContext.MstRooms.SingleOrDefault(room => room.Id == id).Name;
+            }
         }
     }
 }
